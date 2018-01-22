@@ -32,16 +32,31 @@ app.post('/message', function(req,res){
   let user_key = decodeURIComponent(req.body.user_key); // user's key
   let type = decodeURIComponent(req.body.type); // message type
   let content = decodeURIComponent(req.body.content); // user's message
-  let url = api_url + content;
+  let currency = "";
+
+  if (content == "BTC" || content == "비트코인") {
+    currency = "btc_krw";
+  } else if (content == "ETH" || content == "이더리움") {
+    currency = "eth_krw";
+  } else if (content == "XRP" || content == "리플") {
+    currency = "xrp_krw";
+  }
+  
+  let url = api_url + currency;
     
-  request.get(url, function (error, response, body) {
+  // 천단위 콤마 함수
+  function numberWithCommas(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  request(url, function (error, response, body) {
     console.log(response.statusCode);
       let text = "";
       if (!error && response.statusCode == 200) {
         //json 파싱
-        //var objBody = JSON.parse(response.body);
-        //text = objBody.message.result.translatedText;
-        text = response.body;
+        var objBody = JSON.parse(response.body);
+        text = objBody.last;
+        //text = response.body;
          //res.writeHead(200, {'Content-Type': 'text/json;charset=utf-8'});
          //res.end(body);
         // text = body;
@@ -53,7 +68,7 @@ app.post('/message', function(req,res){
     
       let answer = {
         "message":{
-          "text": "현재 시세는 " + text + " 입니다."// in case 'text'
+          "text": "현재 시세는 " + numberWithCommas(text) + "원 입니다."// in case 'text'
         }
       }
 
