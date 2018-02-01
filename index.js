@@ -18,11 +18,6 @@ app.get('/', function(req, res) {
 app.get('/keyboard', function(req, res){
   let keyboard = {
     "type" : "text"
-    /*
-    or button, like this
-    "type" : "buttons",
-    "buttons" : ["btn 1", "btn 2", "btn 3"]
-    */
   };
   res.send(keyboard);
 });
@@ -56,59 +51,20 @@ app.post('/message', function(req,res){
         //json 파싱
         var objBody = JSON.parse(response.body);
         text = objBody.last;
-        //text = response.body;
-         //res.writeHead(200, {'Content-Type': 'text/json;charset=utf-8'});
-         //res.end(body);
-        // text = body;
-      } else {
-         //res.status(response.statusCode).end();
-         //console.log('error = ' + response.statusCode);
+      } else {         
          text = response.statusCode;
       }
     
       let answer = {
         "message":{
-          "text": "현재 시세는 " + numberWithCommas(text) + "원 입니다."// in case 'text'
+          "text": "현재 시세는 " + numberWithCommas(text) + "원 입니다."
         }
       }
 
       res.set({
             'content-type': 'application/json'
       }).send(JSON.stringify(answer));
-  });
-  /*
-  let answer = {
-    "message":{
-      "text":"your message is arrieved server : "+content // in case 'text'
-    }
-  }
-  res.send(answer);
-  */
-  /*
-  answer can use 
-  {
-    "message": {
-      "text": "귀하의 차량이 성공적으로 등록되었습니다. 축하합니다!",
-      "photo": {
-        "url": "https://photo.src",
-        "width": 640,
-        "height": 480
-      },
-      "message_button": {
-        "label": "주유 쿠폰받기",
-        "url": "https://coupon/url"
-      }
-    },
-    "keyboard": {
-      "type": "buttons",
-      "buttons": [
-        "처음으로",
-        "다시 등록하기",
-        "취소하기"
-      ]
-    }
-  }
-  */
+  });  
 });
 
 app.listen(app.get('port'), function() {
